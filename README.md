@@ -1,5 +1,5 @@
-# Next.js/Blueprint.js/TailwindCSS Template
+# sheepcraft
 
-yup
+A game where you write code.
 
-`npx degit wiisportsresort/next-template <name>`
+## <https://sheepcraft.vercel.app>
