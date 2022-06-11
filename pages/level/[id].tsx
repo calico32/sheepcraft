@@ -5,7 +5,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useGoose } from '../../lib/context'
+import { useGoose, useToaster } from '../../lib/context'
 import { Board, BOARD_SCALE, TEXTURE_SCALE, TEXTURE_SIZE } from '../../lib/game/board'
 import {
   Exit,
@@ -130,6 +130,7 @@ const makeBoard = async (
 
 const Level: NextPage = () => {
   const router = useRouter()
+  const toaster = useToaster()
   const goose = useGoose()
   const gameRoot = useRef<HTMLDivElement>(null)
 
@@ -210,22 +211,30 @@ const Level: NextPage = () => {
     }
 
     const allSource = zoolib.addScript(code)
+    try {
+      const res = await goose.worker.execute('main.goose', allSource)
 
-    const res = await goose.worker.execute('main.goose', allSource)
+      if (res.exitCode !== 0 || res.stderr.length > 0) {
+        setResult({ ...runResult(), canRerun: true, success: false })
+      }
 
-    if (res.exitCode !== 0 || res.stderr.length > 0) {
-      setResult({ ...runResult(), success: false })
+      const actions = zoolib.exec(res.stdout)
+      setResult({
+        ...runResult(),
+        canRerun: false,
+        exec: actions,
+        actionCount: actions.actions.length,
+        callCount: actions.callCount,
+      })
+    } catch (err: any) {
+      toaster.show({
+        message: `Error: ${err.message || err}`,
+        intent: 'danger',
+        icon: 'error',
+      })
+      setResult({ ...runResult(), canRerun: true, success: false })
     }
-
-    const actions = zoolib.exec(res.stdout)
-    setResult({
-      ...runResult(),
-      canRerun: false,
-      exec: actions,
-      actionCount: actions.actions.length,
-      callCount: actions.callCount,
-    })
-  }, [goose, result, needReset, zoolib, editor, source, levelDef, board])
+  }, [goose, result, needReset, zoolib, editor, source, levelDef, board, toaster])
 
   useEffect(() => {
     if (editor) {

@@ -9,6 +9,14 @@ description: |-
 
   Once your player is on the exit tile, you can move on to the next level.
 
+  <blockquote style="font-style:normal;color:#d1d5db">
+    <b>Pro tip</b>: press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to run your code.
+  </blockquote>
+
+  <blockquote style="font-style:normal;color:#d1d5db">
+    <b>Note</b>: if your code errors (unknown reference, syntax error), the page will become unresponsive. This is a limitation with TinyGo. Copy your code to the clipboard, reload the page, and paste it back in. Fix any errors before you move on.
+  </blockquote>
+
 player: 3,5
 exit: 3,1
 
