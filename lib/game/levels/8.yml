@@ -1,0 +1,83 @@
+description: |-
+  The ultimate level!
+
+  I don't want to explain how anything else in the language works, so read up on <a href="https://github.com/wiisportsresort/goose#language-description" target="_blank" rel="noreferrer">GitHub</a>.
+
+  This level has a code size limit, so use functions, loops, and variables to get the sheep to the targets.
+
+max_chars: 350
+delay: 200
+size: 11
+player: 5,5
+facing: north
+exit: 5,5
+walls:
+  - surround
+leaves:
+  - 1,2
+  - 2,2
+  - 4,2
+  - 5,2
+  - 3,2
+  - 6,2
+  - 8,8
+  - 7,8
+  - 4,8
+  - 6,8
+  - 5,8
+  - 9,8
+  - 3,8
+  - 7,2
+  - 8,2
+  - 8,3
+  - 8,4
+  - 8,5
+  - 2,8
+  - 2,7
+  - 2,6
+  - 2,5
+  - 8,6
+  - 2,4
+  - 3,4
+  - 5,4
+  - 4,4
+  - 6,4
+  - 7,6
+  - 6,6
+  - 5,6
+  - 4,6
+water: []
+sheep:
+  6,9: white
+  8,9: gray
+  7,9: lightgray
+  9,9: black
+targets:
+  1,1: black
+  2,1: gray
+  3,1: lightgray
+  4,1: white
+
+solution: |
+  fn doSpiral(distance)
+    forward(2)
+    left(2)
+    backward(6)
+    right(6)
+    forward(distance)
+    backward(distance)
+    left(6)
+    forward(6)
+    right(2)
+    backward(2)
+  end
+
+  turnRight()
+  let distance = 5
+  repeat while distance < 9
+    doSpiral(distance)
+    turnRight(2)
+    doSpiral(distance)
+    turnRight(2)
+    distance++
+  end

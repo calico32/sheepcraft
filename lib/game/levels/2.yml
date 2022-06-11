@@ -1,0 +1,48 @@
+description: |-
+  Introducing more obstacles: you can't cross over them. Find a way to the exit.
+
+size: 11
+player: 1,9
+facing: north
+exit: 6,4
+walls:
+  - 5,2
+  - 5,3
+  - 5,4
+  - 5,5
+  - 5,6
+  - 7,1
+  - 8,1
+  - 9,1
+  - 7,3
+  - 6,3
+  - 6,4
+  - 8,4
+  - 8,5
+  - 9,8
+  - 6,5
+  - 8,6
+  - 7,7
+  - 9,9
+  - 9,2
+  - 8,9
+  - 4,9
+  - 4,8
+  - 4,7
+  - 6,8
+leaves:
+  - surround
+water:
+  - 2,6
+  - 3,6
+  - 2,4
+  - 3,4
+  - 2,2
+  - 3,2
+  - 2,8
+  - 1,8
+  - 4,6
+  - 1,4
+  - 4,2
+sheep: {}
+targets: {}

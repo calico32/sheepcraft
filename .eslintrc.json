@@ -1,0 +1,22 @@
+{
+  "extends": ["next/core-web-vitals", "@wiisportsresorts/eslint-config"],
+  "ignorePatterns": ["node_modules", ".next", ".yarn", "out", "public"],
+  "rules": {
+    "import/extensions": "off",
+    "multiline-ternary": "off",
+    "space-before-function-paren": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/method-signature-style": "off",
+    "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/promise-function-async": "off",
+    "@typescript-eslint/return-await": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/consistent-type-assertions": "off"
+  }
+}

@@ -1,0 +1,19 @@
+size: 7
+
+description: |-
+  Welcome to your new job as a sheep herder at the local "zoo." For each level, your objective is to bring all the sheep to their corresponding targets (more on that later), and then get to the exit (the target square).<br><br>
+
+  For now, let's just get to the exit. In the editor below, use the functions in the table to move the player around. Function calls look like this:
+
+  <pre>action(arg1, arg2)</pre>
+
+  Once your player is on the exit tile, you can move on to the next level.
+
+player: 3,5
+exit: 3,1
+
+walls:
+  - surround
+
+solution: |
+  forward(3)
