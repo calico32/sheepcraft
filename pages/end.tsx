@@ -5,6 +5,7 @@ import Head from 'next/head'
 import router from 'next/router'
 import { useEffect, useRef } from 'react'
 import Hero from '../components/Hero'
+
 import black from '../lib/game/textures/sheep/black.avif'
 import blue from '../lib/game/textures/sheep/blue.avif'
 import brown from '../lib/game/textures/sheep/brown.avif'

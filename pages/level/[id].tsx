@@ -16,7 +16,7 @@ import {
   SheepColor,
   SheepTarget,
   Wall,
-  Water
+  Water,
 } from '../../lib/game/object'
 import { Point } from '../../lib/game/point'
 import { ZooLib, ZooLibExec } from '../../lib/game/zoolib'
