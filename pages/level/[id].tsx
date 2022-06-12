@@ -16,7 +16,7 @@ import {
   SheepColor,
   SheepTarget,
   Wall,
-  Water,
+  Water
 } from '../../lib/game/object'
 import { Point } from '../../lib/game/point'
 import { ZooLib, ZooLibExec } from '../../lib/game/zoolib'
@@ -143,6 +143,23 @@ const Level: NextPage = () => {
 
   const level = useMemo(() => parseInt(router.query.id as string) || 1, [router])
   const [levelDef, setLevelDef] = useState<{ [key: string]: any } | null>(null)
+
+  useEffect(() => {
+    if (localStorage.getItem('hardcore') !== 'true') return
+    navigator.clipboard.writeText('frog')
+
+    const clear = (e: ClipboardEvent): void => {
+      navigator.clipboard.writeText('frog')
+      e.preventDefault()
+    }
+
+    document.addEventListener('cut', clear)
+    document.addEventListener('copy', clear)
+    window.addEventListener('blur', () => {
+      localStorage.setItem('time', 'invalid')
+      alert('your time is now invalid (lost focus)')
+    })
+  }, [])
 
   useEffect(() => {
     const init = async (): Promise<void> => {
