@@ -136,6 +136,8 @@ const Level: NextPage = () => {
   const gameRoot = useRef<HTMLDivElement>(null)
 
   const { hardcore, timer } = useHardcore()
+  const [blurEnabled, setBlurEnabled] = useState(true)
+
   const [zoolib] = useState<ZooLib>(new ZooLib())
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null)
   const [needReset, setNeedReset] = useState(false)
@@ -145,6 +147,16 @@ const Level: NextPage = () => {
 
   const level = useMemo(() => parseInt(router.query.id as string) || 1, [router])
   const [levelDef, setLevelDef] = useState<{ [key: string]: any } | null>(null)
+
+  const blurListener = useCallback((): void => {
+    timer.setStartTime(-1)
+    toaster.show({
+      message: 'your time is now invalid (you lost focus)',
+      intent: 'danger',
+      icon: 'cross',
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!hardcore) return
@@ -158,15 +170,6 @@ const Level: NextPage = () => {
 
     document.addEventListener('cut', clobberClipboard)
     document.addEventListener('copy', clobberClipboard)
-
-    const blurListener = (): void => {
-      timer.setStartTime(-1)
-      toaster.show({
-        message: 'your time is now invalid (you lost focus)',
-        intent: 'danger',
-        icon: 'cross',
-      })
-    }
 
     window.addEventListener('blur', blurListener, { once: true })
 
@@ -398,9 +401,28 @@ const Level: NextPage = () => {
                 </Button>
 
                 {process.env.NODE_ENV === 'development' && (
-                  <Button className="w-max" onClick={() => nextLevel(8)}>
-                    Skip to level 8
-                  </Button>
+                  <>
+                    <Button className="w-max" onClick={() => nextLevel(8)}>
+                      Skip to level 8
+                    </Button>
+
+                    {hardcore && (
+                      <Button
+                        className="w-max"
+                        onClick={() => {
+                          if (blurEnabled) {
+                            window.removeEventListener('blur', blurListener)
+                          } else {
+                            window.addEventListener('blur', blurListener, { once: true })
+                          }
+
+                          setBlurEnabled(!blurEnabled)
+                        }}
+                      >
+                        {blurEnabled ? 'Disable blur' : 'Enable blur'}
+                      </Button>
+                    )}
+                  </>
                 )}
 
                 <HardcoreTimer />
