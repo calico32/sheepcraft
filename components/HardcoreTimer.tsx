@@ -12,7 +12,9 @@ const HardcoreTimer = (): JSX.Element => {
       if (subscription == null && timerRef.current != null) {
         const sub = await timer.subscribe(
           Comlink.proxy((time) => {
-            timerRef.current!.innerHTML = time
+            if (timerRef.current) {
+              timerRef.current.innerHTML = time
+            }
           }),
           100
         )
