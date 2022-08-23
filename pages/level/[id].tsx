@@ -137,6 +137,7 @@ const Level: NextPage = () => {
 
   const { hardcore, timer } = useHardcore()
   const [blurEnabled, setBlurEnabled] = useState(true)
+  const [pasteEnabled, setPasteEnabled] = useState(true)
 
   const [zoolib] = useState<ZooLib>(new ZooLib())
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null)
@@ -158,6 +159,16 @@ const Level: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const pasteListener = useCallback((): void => {
+    timer.setStartTime(-1)
+    toaster.show({
+      message: 'your time is now invalid (you pasted text)',
+      intent: 'danger',
+      icon: 'cross',
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     if (!hardcore) return
 
@@ -171,11 +182,14 @@ const Level: NextPage = () => {
     document.addEventListener('cut', clobberClipboard)
     document.addEventListener('copy', clobberClipboard)
 
+    document.addEventListener('paste', pasteListener, { once: true })
+
     window.addEventListener('blur', blurListener, { once: true })
 
     return () => {
       document.removeEventListener('cut', clobberClipboard)
       document.removeEventListener('copy', clobberClipboard)
+      document.removeEventListener('paste', pasteListener)
       window.removeEventListener('blur', blurListener)
     }
 
@@ -407,20 +421,36 @@ const Level: NextPage = () => {
                     </Button>
 
                     {hardcore && (
-                      <Button
-                        className="w-max"
-                        onClick={() => {
-                          if (blurEnabled) {
-                            window.removeEventListener('blur', blurListener)
-                          } else {
-                            window.addEventListener('blur', blurListener, { once: true })
-                          }
+                      <>
+                        <Button
+                          className="w-max"
+                          onClick={() => {
+                            if (blurEnabled) {
+                              window.removeEventListener('blur', blurListener)
+                            } else {
+                              window.addEventListener('blur', blurListener, { once: true })
+                            }
 
-                          setBlurEnabled(!blurEnabled)
-                        }}
-                      >
-                        {blurEnabled ? 'Disable blur' : 'Enable blur'}
-                      </Button>
+                            setBlurEnabled(!blurEnabled)
+                          }}
+                        >
+                          {blurEnabled ? 'Disable blur' : 'Enable blur'}
+                        </Button>
+                        <Button
+                          className="w-max"
+                          onClick={() => {
+                            if (pasteEnabled) {
+                              document.removeEventListener('paste', pasteListener)
+                            } else {
+                              document.addEventListener('paste', pasteListener, { once: true })
+                            }
+
+                            setPasteEnabled(!pasteEnabled)
+                          }}
+                        >
+                          {pasteEnabled ? 'Disable paste' : 'Enable paste'}
+                        </Button>
+                      </>
                     )}
                   </>
                 )}
