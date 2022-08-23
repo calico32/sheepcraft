@@ -26,6 +26,7 @@ import steve from '../lib/game/textures/steve.png'
 
 const End: NextPage = () => {
   const banner = useRef<HTMLDivElement>(null)
+  const timer = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
     const init = async (): Promise<void> => {
@@ -74,6 +75,15 @@ const End: NextPage = () => {
       })
     }
     init()
+
+    if (!timer.current) return
+    const time = localStorage.getItem('time')
+    if (!time || time === 'invalid') timer.current.textContent = 'your time is invalid. 💀'
+    else {
+      const diff = Date.now() - parseInt(time)
+
+      timer.current.textContent = `your time is: ${Math.floor(diff / 60000)}:${(diff / 1000 % 60).toFixed(1)}`
+    }
   }, [])
 
   return (
@@ -92,6 +102,7 @@ const End: NextPage = () => {
             </Button>
           </div>
           <p>you did it</p>
+          <p ref={timer}></p>
         </div>
       </Hero>
     </>

@@ -145,6 +145,23 @@ const Level: NextPage = () => {
   const [levelDef, setLevelDef] = useState<{ [key: string]: any } | null>(null)
 
   useEffect(() => {
+    if (localStorage.getItem('hardcore') !== 'true') return
+    navigator.clipboard.writeText('frog')
+
+    const clear = (e: ClipboardEvent): void => {
+      navigator.clipboard.writeText('frog')
+      e.preventDefault()
+    }
+
+    document.addEventListener('cut', clear)
+    document.addEventListener('copy', clear)
+    window.addEventListener('blur', () => {
+      localStorage.setItem('time', 'invalid')
+      alert('your time is now invalid (lost focus)')
+    })
+  }, [])
+
+  useEffect(() => {
     const init = async (): Promise<void> => {
       const ldef = await import(`../../lib/game/levels/${level}.yml`)
         .then((m) => m.default)

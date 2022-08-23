@@ -37,8 +37,11 @@ const Home: NextPage = () => {
           <div ref={banner} className="-mb-2" />
           <div className="flex">
             <H2 className="m-0 mr-4">sheepcraft</H2>
-            <Button icon="play" intent="success" onClick={() => router.push('/level/1')}>
+            <Button className="mr-4" icon="play" intent="success" onClick={() => { localStorage.setItem('hardcore', 'false'); router.push('/level/1') } }>
               play
+            </Button>
+            <Button icon="flame" intent="danger" onClick={() => { localStorage.setItem('hardcore', 'true'); localStorage.setItem('time', Date.now().toString()); router.push('/level/1') }}>
+              play hardcore
             </Button>
           </div>
         </div>
