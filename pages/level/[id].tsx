@@ -494,7 +494,7 @@ const Level: NextPage = () => {
                 <Button onClick={run} disabled={!!result && !result.canRerun} intent="primary">
                   Run
                 </Button>
-                <Button onClick={nextLevel} disabled={!solveState?.solved} intent="success">
+                <Button onClick={() => nextLevel()} disabled={!solveState?.solved} intent="success">
                   {level === 8 ? 'Finish' : 'Next Level'}
                 </Button>
               </ButtonGroup>
