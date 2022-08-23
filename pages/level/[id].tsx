@@ -279,6 +279,11 @@ const Level: NextPage = () => {
       const addCommand = async (): Promise<void> => {
         const { KeyCode, KeyMod } = await import('monaco-editor')
         editor.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, run)
+        editor.onDidPaste(() => {
+          if (hardcore) {
+            editor.setValue('frog')
+          }
+        })
       }
 
       addCommand()
