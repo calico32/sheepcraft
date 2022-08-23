@@ -74,7 +74,7 @@ const timer: TimerWorker = {
     if (startTime <= 0) {
       updateTime('<strong class="text-red-3">INVALID</strong>')
     } else {
-      updateHandle = setInterval(updateTime, 10) as unknown as number
+      updateHandle = setInterval(updateTime, 1) as unknown as number
     }
   },
   setEndTime(time) {
