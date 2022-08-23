@@ -5,7 +5,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useGoose, useToaster } from '../../lib/context'
+import HardcoreTimer from '../../components/HardcoreTimer'
+import { useGoose, useHardcore, useToaster } from '../../lib/context'
 import { Board, BOARD_SCALE, TEXTURE_SCALE, TEXTURE_SIZE } from '../../lib/game/board'
 import {
   Exit,
@@ -134,6 +135,7 @@ const Level: NextPage = () => {
   const goose = useGoose()
   const gameRoot = useRef<HTMLDivElement>(null)
 
+  const { hardcore, timer } = useHardcore()
   const [zoolib] = useState<ZooLib>(new ZooLib())
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null)
   const [needReset, setNeedReset] = useState(false)
@@ -145,20 +147,36 @@ const Level: NextPage = () => {
   const [levelDef, setLevelDef] = useState<{ [key: string]: any } | null>(null)
 
   useEffect(() => {
-    if (localStorage.getItem('hardcore') !== 'true') return
+    if (!hardcore) return
+
     navigator.clipboard.writeText('frog')
 
-    const clear = (e: ClipboardEvent): void => {
-      navigator.clipboard.writeText('frog')
+    const clobberClipboard = (e: ClipboardEvent): void => {
       e.preventDefault()
+      navigator.clipboard.writeText('frog')
     }
 
-    document.addEventListener('cut', clear)
-    document.addEventListener('copy', clear)
-    window.addEventListener('blur', () => {
-      localStorage.setItem('time', 'invalid')
-      alert('your time is now invalid (lost focus)')
-    })
+    document.addEventListener('cut', clobberClipboard)
+    document.addEventListener('copy', clobberClipboard)
+
+    const blurListener = (): void => {
+      timer.setStartTime(-1)
+      toaster.show({
+        message: 'your time is now invalid (you lost focus)',
+        intent: 'danger',
+        icon: 'cross',
+      })
+    }
+
+    window.addEventListener('blur', blurListener, { once: true })
+
+    return () => {
+      document.removeEventListener('cut', clobberClipboard)
+      document.removeEventListener('copy', clobberClipboard)
+      window.removeEventListener('blur', blurListener)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -269,18 +287,21 @@ const Level: NextPage = () => {
 
   const solveState = board?.solveState(result?.exec)
 
-  const nextLevel = useCallback(() => {
-    if (level === 8) {
-      router.push('/end')
-      return
-    }
-    // level change, reset
-    setResult(null)
-    setNeedReset(true)
-    setSource(defaultSource)
-    editor?.setValue(defaultSource)
-    router.push(`/level/${level + 1}`)
-  }, [router, level, editor])
+  const nextLevel = useCallback(
+    (levelNum = level + 1) => {
+      if (level === 8) {
+        router.push('/end')
+        return
+      }
+      // level change, reset
+      setResult(null)
+      setNeedReset(true)
+      setSource(defaultSource)
+      editor?.setValue(defaultSource)
+      router.push(`/level/${levelNum}`)
+    },
+    [router, level, editor]
+  )
 
   return (
     <>
@@ -369,11 +390,20 @@ const Level: NextPage = () => {
             </div>
           </div>
           <aside className="min-w-[324.36px] flex flex-col">
-            <div className="flex-grow">
-              <div className="flex justify-end">
-                <Button onClick={() => router.push('/')} intent="primary">
+            <div className="flex-grow flex">
+              <div className="flex-grow" />
+              <div className="flex flex-col gap-2 items-end">
+                <Button className="w-max" onClick={() => router.push('/')} intent="primary">
                   Home
                 </Button>
+
+                {process.env.NODE_ENV === 'development' && (
+                  <Button className="w-max" onClick={() => nextLevel(8)}>
+                    Skip to level 8
+                  </Button>
+                )}
+
+                <HardcoreTimer />
               </div>
             </div>
             <H3>Function Reference</H3>

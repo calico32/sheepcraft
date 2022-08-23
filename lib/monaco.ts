@@ -3,6 +3,9 @@ import stripJsonComments from 'strip-json-comments'
 import { gooseMonarch } from './gooose.monarch'
 import { oneDarkTheme } from './oneDark.theme'
 
+let monacoReady = false
+export const isMonacoReady = (): boolean => monacoReady
+
 export const initMonaco = async (monaco: Monaco): Promise<void> => {
   monaco.languages.register({
     id: 'goose',
@@ -25,4 +28,6 @@ export const initMonaco = async (monaco: Monaco): Promise<void> => {
   monaco.languages.setMonarchTokensProvider('goose', gooseMonarch)
 
   monaco.editor.setTheme('oneDark')
+
+  monacoReady = true
 }

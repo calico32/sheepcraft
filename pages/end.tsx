@@ -3,8 +3,9 @@ import { Button, H2 } from '@blueprintjs/core'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import router from 'next/router'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Hero from '../components/Hero'
+import { useHardcore } from '../lib/context'
 
 import black from '../lib/game/textures/sheep/black.avif'
 import blue from '../lib/game/textures/sheep/blue.avif'
@@ -26,10 +27,15 @@ import steve from '../lib/game/textures/steve.png'
 
 const End: NextPage = () => {
   const banner = useRef<HTMLDivElement>(null)
-  const timer = useRef<HTMLParagraphElement>(null)
+  const { hardcore, timer } = useHardcore()
+  const [time, setTime] = useState('')
 
   useEffect(() => {
     const init = async (): Promise<void> => {
+      if (!time) {
+        setTime(await timer.latestTime())
+      }
+
       if (!banner.current) return
 
       const sheepData = [
@@ -75,16 +81,7 @@ const End: NextPage = () => {
       })
     }
     init()
-
-    if (!timer.current) return
-    const time = localStorage.getItem('time')
-    if (!time || time === 'invalid') timer.current.textContent = 'your time is invalid. 💀'
-    else {
-      const diff = Date.now() - parseInt(time)
-
-      timer.current.textContent = `your time is: ${Math.floor(diff / 60000)}:${(diff / 1000 % 60).toFixed(1)}`
-    }
-  }, [])
+  }, [time, timer])
 
   return (
     <>
@@ -92,7 +89,7 @@ const End: NextPage = () => {
         <title>sheepcraft - win</title>
       </Head>
       <Hero>
-        <div className="flex flex-col items-center w-full prose max-w-none prose-invert">
+        <div className="flex flex-col items-center w-full gap-4 max-w-none prose-invert">
           <div className="flex justify-center" ref={banner}></div>
 
           <div className="flex">
@@ -102,7 +99,12 @@ const End: NextPage = () => {
             </Button>
           </div>
           <p>you did it</p>
-          <p ref={timer}></p>
+
+          {hardcore && (
+            <p>
+              your time is <span dangerouslySetInnerHTML={{ __html: time }} />
+            </p>
+          )}
         </div>
       </Hero>
     </>
